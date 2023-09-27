@@ -1,9 +1,9 @@
 const Router = require("express");
 const router = new Router();
 
-router.post("/");
-router.get("/");
-router.get("/:id");
-router.delete("/");
+const ReportingLinksController = require("../controllers/reportingLinksController");
+router.post("/", ReportingLinksController.create);
+router.get("/", ReportingLinksController.getAll);
+router.delete("/", ReportingLinksController.delete);
 
 module.exports = router;

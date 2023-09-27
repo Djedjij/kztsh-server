@@ -67,10 +67,10 @@ const Galery = sequelize.define("galery", {
 const News = sequelize.define("news", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   name: { type: DataTypes.STRING, unique: true, allowNull: false },
-  description: { type: DataTypes.STRING, unique: true, allowNull: false },
-  smallDescription: { type: DataTypes.STRING, unique: true, allowNull: false },
+  description: { type: DataTypes.STRING, allowNull: false },
+  smallDescription: { type: DataTypes.STRING, allowNull: false },
   date: { type: DataTypes.INTEGER, allowNull: false },
-  img: { type: DataTypes.STRING, unique: true, allowNull: false },
+  img: { type: DataTypes.STRING, allowNull: false },
 });
 
 const DirectorContacts = sequelize.define("directorContacts", {
