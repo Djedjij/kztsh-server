@@ -6,13 +6,20 @@ class GaleryController {
     const galery = await Galery.findAll();
     return res.json(galery);
   }
-  async create(req, res) {
-    const { name, img } = req.body;
-    const galery = await Galery.create({
-      name,
-      img,
-    });
-    return res.json(galery);
+  async create(req, res, next) {
+    try {
+      const { name } = req.body;
+      const { img } = req.files;
+      let fileName = uuid.v4() + ".jpg";
+      img.mv(path.resolve(__dirname, "..", "static", fileName));
+      const galery = await Galery.create({
+        name,
+        img: fileName,
+      });
+      return res.json(galery);
+    } catch (e) {
+      next(ApiError.badRequest(e.message));
+    }
   }
   async delete(req, res) {
     try {
@@ -23,6 +30,9 @@ class GaleryController {
       if (!galery) {
         return res.status(404).json({ error: "Не найдено" });
       }
+      const fileName = galery.img;
+      const filePath = path.resolve(__dirname, "..", "static", fileName);
+      fs.unlinkSync(filePath);
 
       await galery.destroy();
 
