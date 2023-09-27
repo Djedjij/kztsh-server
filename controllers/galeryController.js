@@ -1,5 +1,8 @@
 const { Galery } = require("../models/models");
 const ApiError = require("../error/ApiError");
+const uuid = require("uuid");
+const path = require("path");
+const fs = require("fs");
 
 class GaleryController {
   async getAll(req, res) {

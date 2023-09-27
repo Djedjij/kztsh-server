@@ -75,24 +75,24 @@ const News = sequelize.define("news", {
 
 const DirectorContacts = sequelize.define("directorContacts", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  name: { type: DataTypes.STRING, unique: true, allowNull: false },
-  job: { type: DataTypes.STRING, unique: true, allowNull: false },
-  internalPhone: { type: DataTypes.STRING, unique: true, allowNull: false },
-  phone: { type: DataTypes.STRING, unique: true, allowNull: false },
+  name: { type: DataTypes.STRING, allowNull: false },
+  job: { type: DataTypes.STRING, allowNull: false },
+  internalPhone: { type: DataTypes.STRING, allowNull: false },
+  phone: { type: DataTypes.STRING, allowNull: false },
 });
 
 const MarketingContacts = sequelize.define("marketingContacts", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  name: { type: DataTypes.STRING, unique: true, allowNull: false },
-  job: { type: DataTypes.STRING, unique: true, allowNull: false },
-  internalPhone: { type: DataTypes.STRING, unique: true, allowNull: false },
-  phone: { type: DataTypes.STRING, unique: true, allowNull: false },
+  name: { type: DataTypes.STRING, allowNull: false },
+  job: { type: DataTypes.STRING, allowNull: false },
+  internalPhone: { type: DataTypes.STRING, allowNull: false },
+  phone: { type: DataTypes.STRING, allowNull: false },
 });
 
 const DirectorPhotoContacts = sequelize.define("directorPhotoContacts", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  name: { type: DataTypes.STRING, unique: true, allowNull: false },
-  job: { type: DataTypes.STRING, unique: true, allowNull: false },
+  name: { type: DataTypes.STRING, allowNull: false },
+  job: { type: DataTypes.STRING, allowNull: false },
   image: { type: DataTypes.STRING, allowNull: false },
 });
 

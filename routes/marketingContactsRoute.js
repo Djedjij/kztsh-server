@@ -4,6 +4,6 @@ const router = new Router();
 const MarketingContactsController = require("../controllers/marketingContactsController");
 router.post("/", MarketingContactsController.create);
 router.get("/", MarketingContactsController.getAll);
-router.delete("/", MarketingContactsController.delete);
+router.delete("/:id", MarketingContactsController.delete);
 
 module.exports = router;
