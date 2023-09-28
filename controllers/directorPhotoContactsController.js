@@ -8,6 +8,7 @@ class DirectorPhotoContactsController {
     const directorPhotoContacts = await DirectorPhotoContacts.findAll();
     return res.json(directorPhotoContacts);
   }
+
   async create(req, res, next) {
     try {
       const { name, job } = req.body;

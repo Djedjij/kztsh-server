@@ -4,7 +4,7 @@ const router = new Router();
 const ReportingController = require("../controllers/reportingController");
 router.post("/", ReportingController.create);
 router.get("/", ReportingController.getAll);
-router.get("/:id", ReportingController.getId);
+router.get("/:id", ReportingController.getOne);
 router.delete("/", ReportingController.delete);
 
 module.exports = router;

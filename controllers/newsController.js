@@ -8,7 +8,11 @@ class NewsController {
     const news = await News.findAll();
     return res.json(news);
   }
-  async getOne(req, res) {}
+  async getOne(req, res) {
+    const { id } = req.params;
+    const news = await News.findOne({ where: { id } });
+    return res.json(news);
+  }
   async create(req, res, next) {
     try {
       const { name, description, smallDescription, date } = req.body;
