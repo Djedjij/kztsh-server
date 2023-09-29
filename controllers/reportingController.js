@@ -16,20 +16,24 @@ class ReportingController {
   }
   async create(req, res, next) {
     try {
+    
       let { name, reportingLinks } = req.body;
+      const reporting = await Reporting.create({
+        name,
+        reportingLinks
+      });
       if (reportingLinks) {
-        reportingLinks = JSON.parse(reportingLinks);
+        // reportingLinks = JSON.parse(reportingLinks);
         reportingLinks.forEach((i) =>
           ReportingLinks.create({
             name: i.name,
             src: i.src,
-            reportingLinksId: reportingLinks.id,
+            reportingId: reporting.id,
           })
         );
+      
       }
-      const reporting = await Reporting.create({
-        name,
-      });
+      
       return res.json(reporting);
     } catch (e) {
       next(ApiError.badRequest(e.message));
