@@ -32,7 +32,7 @@ const Category = sequelize.define("category", {
   },
   tableCharacteristics: {
     type: DataTypes.JSON,
-    allowNull: false, 
+    allowNull: false,
     index: {
       name: "categories_index",
       using: "gin",
@@ -102,7 +102,7 @@ Category.belongsTo(Items);
 Category.hasMany(Characteristics);
 Characteristics.belongsTo(Category);
 
-Reporting.hasMany(ReportingLinks, {as: 'reportingLinks'});
+Reporting.hasMany(ReportingLinks, { as: "reportingLinks" });
 ReportingLinks.belongsTo(Reporting);
 
 module.exports = {

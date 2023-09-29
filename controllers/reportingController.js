@@ -1,5 +1,8 @@
 const ApiError = require("../error/ApiError");
 const { Reporting, ReportingLinks } = require("../models/models");
+const uuid = require("uuid");
+const path = require("path");
+const fs = require("fs");
 
 class ReportingController {
   async getAll(req, res) {
@@ -16,14 +19,12 @@ class ReportingController {
   }
   async create(req, res, next) {
     try {
-    
       let { name, reportingLinks } = req.body;
       const reporting = await Reporting.create({
         name,
-        reportingLinks
+        reportingLinks,
       });
       if (reportingLinks) {
-        // reportingLinks = JSON.parse(reportingLinks);
         reportingLinks.forEach((i) =>
           ReportingLinks.create({
             name: i.name,
@@ -31,9 +32,8 @@ class ReportingController {
             reportingId: reporting.id,
           })
         );
-      
       }
-      
+
       return res.json(reporting);
     } catch (e) {
       next(ApiError.badRequest(e.message));
@@ -42,17 +42,38 @@ class ReportingController {
   async delete(req, res) {
     try {
       const { id } = req.params;
-
       const reporting = await Reporting.findByPk(id);
-
       if (!reporting) {
         return res.status(404).json({ error: "Не найдено" });
       }
-          
       await reporting.destroy();
-
       return res.status(204).send();
-    }catch (e) {
+    } catch (e) {
+      next(ApiError.badRequest(e.message));
+    }
+  }
+  async createReportingLink(req, res, next) {
+    const reportingId = req.params.reportingId;
+    const newReportingLinks = req.body;
+
+    try {
+      const reporting = await Reporting.findByPk(reportingId);
+
+      if (!reporting) {
+        throw new Error("Reporting not found");
+      }
+
+      if (newReportingLinks) {
+        let { name, src } = req.body;
+        await ReportingLinks.create({
+          name,
+          src,
+          reportingId: reporting.id,
+        });
+        // reporting.reportingLinks.push(createdLink);
+      }
+      return res.json(reporting);
+    } catch (e) {
       next(ApiError.badRequest(e.message));
     }
   }
