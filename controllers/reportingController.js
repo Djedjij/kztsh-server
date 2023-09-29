@@ -9,6 +9,7 @@ class ReportingController {
     const reporting = await Reporting.findAll();
     return res.json(reporting);
   }
+
   async getOne(req, res) {
     const { id } = req.params;
     const reporting = await Reporting.findOne({
@@ -17,6 +18,7 @@ class ReportingController {
     });
     return res.json(reporting);
   }
+
   async create(req, res, next) {
     try {
       let { name, reportingLinks } = req.body;
@@ -39,6 +41,7 @@ class ReportingController {
       next(ApiError.badRequest(e.message));
     }
   }
+
   async delete(req, res) {
     try {
       const { id } = req.params;
@@ -52,15 +55,16 @@ class ReportingController {
       next(ApiError.badRequest(e.message));
     }
   }
+
   async createReportingLink(req, res, next) {
     const reportingId = req.params.reportingId;
+
     const newReportingLinks = req.body;
 
     try {
       const reporting = await Reporting.findByPk(reportingId);
-
       if (!reporting) {
-        throw new Error("Reporting not found");
+        return res.status(404).json({ error: "Не найдено" });
       }
 
       if (newReportingLinks) {
@@ -70,9 +74,22 @@ class ReportingController {
           src,
           reportingId: reporting.id,
         });
-        // reporting.reportingLinks.push(createdLink);
       }
       return res.json(reporting);
+    } catch (e) {
+      next(ApiError.badRequest(e.message));
+    }
+  }
+
+  async deleteReportingLink(req, res, next) {
+    try {
+      const linkId = req.params.linkId;
+      const reportingLink = await ReportingLinks.findByPk(linkId);
+      if (!reportingLink) {
+        return res.status(404).json({ error: "Не найдено" });
+      }
+      await reportingLink.destroy();
+      return res.status(204).send();
     } catch (e) {
       next(ApiError.badRequest(e.message));
     }
