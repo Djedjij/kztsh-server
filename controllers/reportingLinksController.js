@@ -1,5 +1,6 @@
 class ReportingLinksController {
   async getAll(req, res) {}
+  async getOne(req, res) {}
   async create(req, res) {}
   async delete(req, res) {}
 }
