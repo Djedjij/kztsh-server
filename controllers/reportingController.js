@@ -68,10 +68,14 @@ class ReportingController {
       }
 
       if (newReportingLinks) {
-        let { name, src } = req.body;
+        let { name } = req.body;
+        const { src } = req.files;
+        const folderName = "documents";
+        let fileName = uuid.v4() + ".pdf";
+        src.mv(path.resolve(__dirname, "..", "static", folderName, fileName));
         await ReportingLinks.create({
           name,
-          src,
+          src: fileName,
           reportingId: reporting.id,
         });
       }
@@ -88,7 +92,17 @@ class ReportingController {
       if (!reportingLink) {
         return res.status(404).json({ error: "Не найдено" });
       }
+      const fileName = reportingLink.src;
+      const filePath = path.resolve(
+        __dirname,
+        "..",
+        "static",
+        "documents",
+        fileName
+      );
+      fs.unlinkSync(filePath);
       await reportingLink.destroy();
+
       return res.status(204).send();
     } catch (e) {
       next(ApiError.badRequest(e.message));
