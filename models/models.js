@@ -6,18 +6,9 @@ const Items = sequelize.define("items", {
   title: { type: DataTypes.STRING, unique: true, allowNull: false },
   count: { type: DataTypes.INTEGER, allowNull: false },
   image: { type: DataTypes.STRING, allowNull: false },
-  categories: {
-    type: DataTypes.JSON,
-    allowNull: false,
-    index: {
-      name: "categories_index",
-      using: "gin",
-      operator: "jsonb_path_ops",
-    },
-  },
 });
 
-const Category = sequelize.define("category", {
+const Category = sequelize.define("categories", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   name: { type: DataTypes.STRING, unique: true, allowNull: false },
   description: { type: DataTypes.STRING, allowNull: false },
@@ -30,15 +21,15 @@ const Category = sequelize.define("category", {
       operator: "jsonb_path_ops",
     },
   },
-  tableCharacteristics: {
-    type: DataTypes.JSON,
-    allowNull: false,
-    index: {
-      name: "categories_index",
-      using: "gin",
-      operator: "jsonb_path_ops",
-    },
-  },
+  // tableCharacteristics: {
+  //   type: DataTypes.JSON,
+  //   allowNull: true,
+  //   index: {
+  //     name: "categories_index",
+  //     using: "gin",
+  //     operator: "jsonb_path_ops",
+  //   },
+  // },
 });
 
 const Characteristics = sequelize.define("characteristics", {
@@ -96,10 +87,10 @@ const DirectorPhotoContacts = sequelize.define("directorPhotoContacts", {
   image: { type: DataTypes.STRING, allowNull: false },
 });
 
-Items.hasMany(Category, { as: "itemCategories" });
+Items.hasMany(Category, { as: "categories" });
 Category.belongsTo(Items);
 
-Category.hasMany(Characteristics);
+Category.hasMany(Characteristics, { as: "characteristics" });
 Characteristics.belongsTo(Category);
 
 Reporting.hasMany(ReportingLinks, { as: "reportingLinks" });
