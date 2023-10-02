@@ -14,28 +14,25 @@ const Category = sequelize.define("categories", {
   description: { type: DataTypes.STRING, allowNull: false },
   images: {
     type: DataTypes.JSON,
-    allowNull: false,
+    allowNull: true,
     index: {
-      name: "categories_index",
+      name: "images_index",
       using: "gin",
       operator: "jsonb_path_ops",
     },
   },
-  // tableCharacteristics: {
-  //   type: DataTypes.JSON,
-  //   allowNull: true,
-  //   index: {
-  //     name: "categories_index",
-  //     using: "gin",
-  //     operator: "jsonb_path_ops",
-  //   },
-  // },
 });
 
 const Characteristics = sequelize.define("characteristics", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  name: { type: DataTypes.STRING, unique: true, allowNull: false },
-  value: { type: DataTypes.STRING, allowNull: false },
+  name: { type: DataTypes.STRING, unique: true, allowNull: true },
+  value: { type: DataTypes.STRING, allowNull: true },
+});
+
+const TableCharacteristics = sequelize.define("tableCharacteristics", {
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  name: { type: DataTypes.STRING, unique: true, allowNull: true },
+  value: { type: DataTypes.STRING, allowNull: true },
 });
 
 const Reporting = sequelize.define("reporting", {
@@ -93,6 +90,9 @@ Category.belongsTo(Items);
 Category.hasMany(Characteristics, { as: "characteristics" });
 Characteristics.belongsTo(Category);
 
+Category.hasMany(TableCharacteristics, { as: "tableCharacteristics" });
+TableCharacteristics.belongsTo(Category);
+
 Reporting.hasMany(ReportingLinks, { as: "reportingLinks" });
 ReportingLinks.belongsTo(Reporting);
 
@@ -107,4 +107,5 @@ module.exports = {
   DirectorContacts,
   MarketingContacts,
   DirectorPhotoContacts,
+  TableCharacteristics,
 };

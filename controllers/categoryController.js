@@ -1,5 +1,9 @@
 const ApiError = require("../error/ApiError");
-const { Category } = require("../models/models");
+const {
+  Category,
+  Characteristics,
+  TableCharacteristics,
+} = require("../models/models");
 const uuid = require("uuid");
 const path = require("path");
 const fs = require("fs");
@@ -14,44 +18,110 @@ class CategoryController {
     const { id } = req.params;
     const categories = await Category.findOne({
       where: { id },
-      include: [{ model: Category, as: "characteristics" }],
+      include: [
+        { model: Characteristics, as: "characteristics" },
+        { model: TableCharacteristics, as: "tableCharacteristics" },
+      ],
     });
     return res.json(categories);
   }
 
   async create(req, res, next) {
     try {
-      const { name, description, tableCharacteristics } = req.body;
-      const { images } = req.files;
+      const { name, description, characteristics, tableCharacteristics } =
+        req.body;
+      console.log(req.body);
+      // const { images } = req.files;
 
-      const imagesArr = images.map(async (img) => {
-        let fileName = uuid.v4() + ".jpg";
-        await img.mv(
-          path.resolve(__dirname, "..", "static", "itemsImages", fileName)
+      // Проверка наличия изображений
+      if (!images || !Array.isArray(images) || images.length === 0) {
+        return next(ApiError.badRequest("Images are required."));
+      }
+
+      const imagesArr = await Promise.all(
+        images.map(async (img) => {
+          let fileName = uuid.v4() + ".jpg";
+          try {
+            await img.mv(
+              path.resolve(__dirname, "..", "static", "itemsImages", fileName)
+            );
+            return fileName;
+          } catch (error) {
+            throw new Error(`Failed to move image: ${error.message}`);
+          }
+        })
+      );
+
+      if (characteristics) {
+        await Promise.all(
+          characteristics.map(async (i) => {
+            try {
+              await Characteristics.create({
+                name: i.name,
+                value: i.value,
+                categoryId: categories.id,
+              });
+            } catch (e) {
+              next(ApiError.badRequest(e.message));
+            }
+          })
         );
-      });
-      const imagesNames = await Promise.all(imagesArr);
+      }
 
       if (tableCharacteristics) {
-        const tableCharacteristicsArr = tableCharacteristics.map((char) => ({
-          name: char.name,
-          value: char.value,
-          characteristicsId: categories.id,
-        }));
-      } else {
-        return null;
+        await Promise.all(
+          tableCharacteristics.forEach(async (char) => {
+            try {
+              await TableCharacteristics.create({
+                name: char.name,
+                value: char.value,
+                categoryId: categories.id,
+              });
+            } catch (e) {
+              next(ApiError.badRequest(e.message));
+            }
+          })
+        );
       }
       const categories = await Category.create({
         name,
         description,
-        images: imagesNames,
-        tableCharacteristics: tableCharacteristicsArr,
+        images: imagesArr,
+        characteristics,
+        tableCharacteristics,
       });
+
+      return res.json(categories);
+    } catch (error) {
+      return next(ApiError.badRequest(error.message));
+    }
+  }
+  async createCharacteristics(req, res, next) {
+    const characteristicsId = req.params.categoryId;
+    console.log(characteristicsId);
+    const newCharacteristics = req.body;
+    console.log(newCharacteristics);
+    try {
+      const categories = await Category.findByPk(characteristicsId);
+      if (!categories) {
+        return res.status(404).json({ error: "Не найдено" });
+      }
+
+      if (newCharacteristics) {
+        let { name, value } = req.body;
+
+        await Characteristics.create({
+          name,
+          value,
+          categoryId: categories.id,
+        });
+      }
       return res.json(categories);
     } catch (e) {
       next(ApiError.badRequest(e.message));
     }
   }
+
   async delete(req, res) {
     try {
       const { id } = req.params;

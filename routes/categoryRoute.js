@@ -3,6 +3,10 @@ const router = new Router();
 const CategoryController = require("../controllers/categoryController");
 router.post("/", CategoryController.create);
 router.get("/", CategoryController.getAll);
-router.delete("/", CategoryController.delete);
-
+router.get("/:id", CategoryController.getOne);
+router.delete("/:id", CategoryController.delete);
+router.post(
+  "/addCharacteristics/:characteristicsId",
+  CategoryController.createCharacteristics
+);
 module.exports = router;

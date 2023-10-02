@@ -33,15 +33,15 @@ class ItemsController {
         image: fileName,
         categories,
       });
-      if (categories) {
-        categories.forEach((i) =>
-          categories.create({
-            name: i.name,
-            src: i.src,
-            itemsId: items.id,
-          })
-        );
-      }
+      //    if (reportingLinks) {
+      //   reportingLinks.forEach((i) =>
+      //     ReportingLinks.create({
+      //       name: i.name,
+      //       src: i.src,
+      //       reportingId: reporting.id,
+      //     })
+      //   );
+      // }
       return res.json(items);
     } catch (e) {
       next(ApiError.badRequest(e.message));
