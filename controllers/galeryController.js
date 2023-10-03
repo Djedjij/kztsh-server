@@ -9,6 +9,11 @@ class GaleryController {
     const galery = await Galery.findAll();
     return res.json(galery);
   }
+  async getOne(req, res) {
+    const { id } = req.params;
+    const galery = await Galery.findOne({ where: { id } });
+    return res.json(galery);
+  }
   async create(req, res, next) {
     try {
       const { name } = req.body;

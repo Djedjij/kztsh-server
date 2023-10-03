@@ -5,6 +5,13 @@ class MarketingContactsController {
     const marketingContacts = await MarketingContacts.findAll();
     return res.json(marketingContacts);
   }
+  async getOne(req, res) {
+    const { id } = req.params;
+    const marketingContacts = await MarketingContacts.findOne({
+      where: { id },
+    });
+    return res.json(marketingContacts);
+  }
   async create(req, res, next) {
     try {
       const { name, job, internalPhone, phone } = req.body;

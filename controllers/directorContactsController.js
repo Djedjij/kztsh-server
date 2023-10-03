@@ -5,6 +5,11 @@ class DirectorContactsController {
     const directorContacts = await DirectorContacts.findAll();
     return res.json(directorContacts);
   }
+  async getOne(req, res) {
+    const { id } = req.params;
+    const directorContacts = await DirectorContacts.findOne({ where: { id } });
+    return res.json(directorContacts);
+  }
   async create(req, res, next) {
     try {
       const { name, job, internalPhone, phone } = req.body;
