@@ -6,7 +6,19 @@ router.get("/", CategoryController.getAll);
 router.get("/:id", CategoryController.getOne);
 router.delete("/:id", CategoryController.delete);
 router.post(
-  "/addCharacteristics/:characteristicsId",
+  "/addCharacteristics/:categoryId",
   CategoryController.createCharacteristics
+);
+router.delete(
+  "/deleteCharacteristics/:characteristicsId",
+  CategoryController.deleteCharacteristics
+);
+router.post(
+  "/addTableCharacteristics/:categoryId",
+  CategoryController.createTableCharacteristics
+);
+router.delete(
+  "/deleteTableCharacteristics/:tableCharacteristicsId",
+  CategoryController.deleteTableCharacteristics
 );
 module.exports = router;

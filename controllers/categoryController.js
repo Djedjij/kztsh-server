@@ -31,7 +31,7 @@ class CategoryController {
       const { name, description, characteristics, tableCharacteristics } =
         req.body;
       console.log(req.body);
-      // const { images } = req.files;
+      const { images } = req.files;
 
       // Проверка наличия изображений
       if (!images || !Array.isArray(images) || images.length === 0) {
@@ -51,10 +51,19 @@ class CategoryController {
           }
         })
       );
+      const categories = await Category.create({
+        name,
+        description,
+        images: imagesArr,
+        characteristics,
+        tableCharacteristics,
+      });
 
       if (characteristics) {
+        const characteristicsArr = JSON.parse(characteristics);
+        console.log(characteristicsArr);
         await Promise.all(
-          characteristics.map(async (i) => {
+          characteristicsArr.map(async (i) => {
             try {
               await Characteristics.create({
                 name: i.name,
@@ -69,8 +78,9 @@ class CategoryController {
       }
 
       if (tableCharacteristics) {
+        const tableCharacteristicsArr = JSON.parse(tableCharacteristics);
         await Promise.all(
-          tableCharacteristics.forEach(async (char) => {
+          tableCharacteristicsArr.map(async (char) => {
             try {
               await TableCharacteristics.create({
                 name: char.name,
@@ -83,24 +93,33 @@ class CategoryController {
           })
         );
       }
-      const categories = await Category.create({
-        name,
-        description,
-        images: imagesArr,
-        characteristics,
-        tableCharacteristics,
-      });
 
       return res.json(categories);
     } catch (error) {
       return next(ApiError.badRequest(error.message));
     }
   }
+
+  async delete(req, res) {
+    try {
+      const { id } = req.params;
+      const categories = await Category.findByPk(id);
+      if (!categories) {
+        return res.status(404).json({ error: "Не найдено" });
+      }
+      await categories.destroy();
+      return res.status(204).send();
+    } catch (e) {
+      next(ApiError.badRequest(e.message));
+    }
+  }
+
+  // characteristics functions
   async createCharacteristics(req, res, next) {
     const characteristicsId = req.params.categoryId;
-    console.log(characteristicsId);
+
     const newCharacteristics = req.body;
-    console.log(newCharacteristics);
+
     try {
       const categories = await Category.findByPk(characteristicsId);
       if (!categories) {
@@ -122,14 +141,62 @@ class CategoryController {
     }
   }
 
-  async delete(req, res) {
+  async deleteCharacteristics(req, res, next) {
     try {
-      const { id } = req.params;
-      const categories = await Category.findByPk(id);
+      const characteristicsId = req.params.characteristicsId;
+      const characteristics = await Characteristics.findByPk(characteristicsId);
+
+      if (!characteristics) {
+        return res.status(404).json({ error: "Не найдено" });
+      }
+
+      await characteristics.destroy();
+
+      return res.status(204).send();
+    } catch (e) {
+      next(ApiError.badRequest(e.message));
+    }
+  }
+
+  async createTableCharacteristics(req, res, next) {
+    const characteristicsId = req.params.categoryId;
+
+    const newTableCharacteristics = req.body;
+
+    try {
+      const categories = await Category.findByPk(characteristicsId);
       if (!categories) {
         return res.status(404).json({ error: "Не найдено" });
       }
-      await categories.destroy();
+
+      if (newTableCharacteristics) {
+        let { name, value } = req.body;
+
+        await TableCharacteristics.create({
+          name,
+          value,
+          categoryId: categories.id,
+        });
+      }
+      return res.json(categories);
+    } catch (e) {
+      next(ApiError.badRequest(e.message));
+    }
+  }
+
+  async deleteTableCharacteristics(req, res, next) {
+    try {
+      const tableCharacteristicsId = req.params.tableCharacteristicsId;
+      const tableCharacteristics = await TableCharacteristics.findByPk(
+        tableCharacteristicsId
+      );
+
+      if (!tableCharacteristics) {
+        return res.status(404).json({ error: "Не найдено" });
+      }
+
+      await tableCharacteristics.destroy();
+
       return res.status(204).send();
     } catch (e) {
       next(ApiError.badRequest(e.message));
