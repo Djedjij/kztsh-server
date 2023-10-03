@@ -3,6 +3,7 @@ const { Items, Category } = require("../models/models");
 const uuid = require("uuid");
 const path = require("path");
 const fs = require("fs");
+
 class ItemsController {
   async getAll(req, res) {
     const items = await Items.findAll();
@@ -27,21 +28,13 @@ class ItemsController {
       image.mv(
         path.resolve(__dirname, "..", "static", "itemsImages", fileName)
       );
+
       const items = await Items.create({
         title,
         count,
         image: fileName,
-        categories,
       });
-      //    if (reportingLinks) {
-      //   reportingLinks.forEach((i) =>
-      //     ReportingLinks.create({
-      //       name: i.name,
-      //       src: i.src,
-      //       reportingId: reporting.id,
-      //     })
-      //   );
-      // }
+
       return res.json(items);
     } catch (e) {
       next(ApiError.badRequest(e.message));

@@ -30,7 +30,8 @@ class CategoryController {
     try {
       const { name, description, characteristics, tableCharacteristics } =
         req.body;
-      console.log(req.body);
+      const itemId = req.params.itemId;
+      console.log(itemId);
       const { images } = req.files;
 
       // Проверка наличия изображений
@@ -57,6 +58,7 @@ class CategoryController {
         images: imagesArr,
         characteristics,
         tableCharacteristics,
+        itemId,
       });
 
       if (characteristics) {
