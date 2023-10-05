@@ -6,7 +6,9 @@ const fs = require("fs");
 
 class ReportingController {
   async getAll(req, res) {
-    const reporting = await Reporting.findAll();
+    const reporting = await Reporting.findAll({
+      include: [{ model: ReportingLinks, as: "reportingLinks" }],
+    });
     return res.json(reporting);
   }
 

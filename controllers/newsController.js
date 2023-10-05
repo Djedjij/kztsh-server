@@ -17,6 +17,7 @@ class NewsController {
     try {
       const { name, description, smallDescription, date } = req.body;
       const { img } = req.files;
+      console.log(req.files);
       let fileName = uuid.v4() + ".jpg";
       img.mv(path.resolve(__dirname, "..", "static", fileName));
       const news = await News.create({
