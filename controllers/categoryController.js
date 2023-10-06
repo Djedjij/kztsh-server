@@ -7,10 +7,16 @@ const {
 const uuid = require("uuid");
 const path = require("path");
 const fs = require("fs");
+const { log } = require("console");
 
 class CategoryController {
   async getAll(req, res) {
-    const categories = await Category.findAll();
+    const categories = await Category.findAll({
+      include: [
+        { model: Characteristics, as: "characteristics" },
+        { model: TableCharacteristics, as: "tableCharacteristics" },
+      ],
+    });
     return res.json(categories);
   }
 
@@ -36,7 +42,7 @@ class CategoryController {
 
       // Проверка наличия изображений
       if (!images || !Array.isArray(images) || images.length === 0) {
-        return next(ApiError.badRequest("Images are required."));
+        return next(ApiError.badRequest("Изображения не найдены"));
       }
 
       const imagesArr = await Promise.all(

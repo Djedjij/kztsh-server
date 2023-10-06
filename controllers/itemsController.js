@@ -6,7 +6,9 @@ const fs = require("fs");
 
 class ItemsController {
   async getAll(req, res) {
-    const items = await Items.findAll();
+    const items = await Items.findAll({
+      include: [{ model: Category, as: "categories" }],
+    });
     return res.json(items);
   }
 
@@ -21,9 +23,9 @@ class ItemsController {
 
   async create(req, res, next) {
     try {
-      let { title, count, categories } = req.body;
+      let { title } = req.body;
       const { image } = req.files;
-
+      console.log(req.files);
       let fileName = uuid.v4() + ".jpg";
       image.mv(
         path.resolve(__dirname, "..", "static", "itemsImages", fileName)
@@ -31,7 +33,6 @@ class ItemsController {
 
       const items = await Items.create({
         title,
-        count,
         image: fileName,
       });
 
