@@ -7,7 +7,6 @@ const {
 const uuid = require("uuid");
 const path = require("path");
 const fs = require("fs");
-const { log } = require("console");
 
 class CategoryController {
   async getAll(req, res) {
@@ -38,11 +37,14 @@ class CategoryController {
         req.body;
       const itemId = req.params.itemId;
       console.log(itemId);
-      const { images } = req.files;
+      let { images } = req.files;
 
-      // Проверка наличия изображений
-      if (!images || !Array.isArray(images) || images.length === 0) {
+      if (!images) {
         return next(ApiError.badRequest("Изображения не найдены"));
+      }
+      // Если загружено только одно изображение, превращаем его в массив.
+      if (!Array.isArray(images)) {
+        images = [images];
       }
 
       const imagesArr = await Promise.all(

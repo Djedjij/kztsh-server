@@ -1,5 +1,10 @@
 const ApiError = require("../error/ApiError");
-const { Items, Category } = require("../models/models");
+const {
+  Items,
+  Category,
+  Characteristics,
+  TableCharacteristics,
+} = require("../models/models");
 const uuid = require("uuid");
 const path = require("path");
 const fs = require("fs");
@@ -7,7 +12,16 @@ const fs = require("fs");
 class ItemsController {
   async getAll(req, res) {
     const items = await Items.findAll({
-      include: [{ model: Category, as: "categories" }],
+      include: [
+        {
+          model: Category,
+          as: "categories",
+          include: [
+            { model: Characteristics, as: "characteristics" },
+            { model: TableCharacteristics, as: "tableCharacteristics" },
+          ],
+        },
+      ],
     });
     return res.json(items);
   }

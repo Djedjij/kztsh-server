@@ -24,13 +24,13 @@ const Category = sequelize.define("categories", {
 
 const Characteristics = sequelize.define("characteristics", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  name: { type: DataTypes.STRING, unique: true, allowNull: true },
+  name: { type: DataTypes.STRING, allowNull: true },
   value: { type: DataTypes.STRING, allowNull: true },
 });
 
 const TableCharacteristics = sequelize.define("tableCharacteristics", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  name: { type: DataTypes.STRING, unique: true, allowNull: true },
+  name: { type: DataTypes.STRING, allowNull: true },
   value: { type: DataTypes.STRING, allowNull: true },
 });
 
@@ -41,13 +41,13 @@ const Reporting = sequelize.define("reporting", {
 
 const ReportingLinks = sequelize.define("reportingLinks", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  name: { type: DataTypes.STRING, unique: true, allowNull: false },
+  name: { type: DataTypes.STRING, allowNull: false },
   src: { type: DataTypes.STRING, unique: true, allowNull: false },
 });
 
 const Galery = sequelize.define("galery", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  name: { type: DataTypes.STRING, unique: true, allowNull: false },
+  name: { type: DataTypes.STRING, allowNull: false },
   img: { type: DataTypes.STRING, unique: true, allowNull: false },
 });
 
