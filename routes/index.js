@@ -8,7 +8,9 @@ const newsRoute = require("./newsRoute");
 const directorContactsRoute = require("./directorContactsRoute");
 const marketingContactsRoute = require("./marketingContactsRoute");
 const directorPhotoContactsRoute = require("./directorPhotoContactsRoute");
+const authRoute = require("./authRoute");
 
+router.use("/auth", authRoute);
 router.use("/items", itemsRoute);
 router.use("/category", categoryRoute);
 router.use("/reporting", reportingRoute);

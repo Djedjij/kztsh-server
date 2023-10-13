@@ -84,6 +84,17 @@ const DirectorPhotoContacts = sequelize.define("directorPhotoContacts", {
   image: { type: DataTypes.STRING, allowNull: false },
 });
 
+const User = sequelize.define("user", {
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  name: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true,
+    required: true,
+  },
+  password: { type: DataTypes.STRING, required: true },
+});
+
 Items.hasMany(Category, { as: "categories" });
 Category.belongsTo(Items);
 
@@ -108,4 +119,5 @@ module.exports = {
   MarketingContacts,
   DirectorPhotoContacts,
   TableCharacteristics,
+  User,
 };
