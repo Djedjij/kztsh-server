@@ -37,17 +37,22 @@ class ItemsController {
 
   async create(req, res, next) {
     try {
-      let { title } = req.body;
-      const { image } = req.files;
-      console.log(req.files);
+      let { title, description } = req.body;
+      const image = req.files.image;
+      const icon = req.files.icon;
+
       let fileName = uuid.v4() + ".jpg";
       image.mv(
         path.resolve(__dirname, "..", "static", "itemsImages", fileName)
       );
+      let iconName = uuid.v4() + ".jpg";
+      icon.mv(path.resolve(__dirname, "..", "static", "itemsImages", iconName));
 
       const items = await Items.create({
         title,
+        description,
         image: fileName,
+        icon: iconName,
       });
 
       return res.json(items);

@@ -4,7 +4,9 @@ const { DataTypes } = require("sequelize");
 const Items = sequelize.define("items", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   title: { type: DataTypes.STRING, unique: true, allowNull: false },
+  description: { type: DataTypes.STRING, allowNull: false },
   image: { type: DataTypes.STRING, allowNull: false },
+  icon: { type: DataTypes.STRING, allowNull: false },
 });
 
 const Category = sequelize.define("categories", {
@@ -56,7 +58,6 @@ const News = sequelize.define("news", {
   name: { type: DataTypes.STRING, unique: true, allowNull: false },
   description: { type: DataTypes.TEXT, allowNull: false },
   smallDescription: { type: DataTypes.STRING, allowNull: false },
-  date: { type: DataTypes.STRING, allowNull: false },
   img: { type: DataTypes.STRING, allowNull: false },
 });
 
