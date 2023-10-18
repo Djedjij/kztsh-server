@@ -15,6 +15,7 @@ class NewsController {
   }
   async create(req, res, next) {
     try {
+      // 
       const { name, description, smallDescription, date } = req.body;
       const { img } = req.files;
       let fileName = uuid.v4() + ".jpg";
