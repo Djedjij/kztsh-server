@@ -32,8 +32,12 @@ const Characteristics = sequelize.define("characteristics", {
 
 const TableCharacteristics = sequelize.define("tableCharacteristics", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  name: { type: DataTypes.STRING, allowNull: true },
-  value: { type: DataTypes.STRING, allowNull: true },
+  name: { type: DataTypes.ARRAY(DataTypes.STRING), allowNull: true },
+});
+
+const TableNameCharacteristics = sequelize.define("tableNameCharacteristics", {
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  name: { type: DataTypes.ARRAY(DataTypes.STRING), allowNull: true },
 });
 
 const Reporting = sequelize.define("reporting", {
@@ -104,6 +108,9 @@ Characteristics.belongsTo(Category);
 Category.hasMany(TableCharacteristics, { as: "tableCharacteristics" });
 TableCharacteristics.belongsTo(Category);
 
+Category.hasMany(TableNameCharacteristics, { as: "tableNameCharacteristics" });
+TableCharacteristics.belongsTo(Category);
+
 Reporting.hasMany(ReportingLinks, { as: "reportingLinks" });
 ReportingLinks.belongsTo(Reporting);
 
@@ -119,5 +126,6 @@ module.exports = {
   MarketingContacts,
   DirectorPhotoContacts,
   TableCharacteristics,
+  TableNameCharacteristics,
   User,
 };

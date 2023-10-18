@@ -4,6 +4,7 @@ const {
   Category,
   Characteristics,
   TableCharacteristics,
+  TableNameCharacteristics,
 } = require("../models/models");
 const uuid = require("uuid");
 const path = require("path");
@@ -19,6 +20,7 @@ class ItemsController {
           include: [
             { model: Characteristics, as: "characteristics" },
             { model: TableCharacteristics, as: "tableCharacteristics" },
+            { model: TableNameCharacteristics, as: "tableNameCharacteristics" },
           ],
         },
       ],
