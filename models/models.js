@@ -4,37 +4,20 @@ const { DataTypes } = require("sequelize");
 const Items = sequelize.define("items", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   title: { type: DataTypes.STRING, unique: true, allowNull: false },
-  count: { type: DataTypes.INTEGER, allowNull: false },
+  description: { type: DataTypes.STRING, allowNull: false },
   image: { type: DataTypes.STRING, allowNull: false },
-  categories: {
-    type: DataTypes.JSON,
-    allowNull: false,
-    index: {
-      name: "categories_index",
-      using: "gin",
-      operator: "jsonb_path_ops",
-    },
-  },
+  icon: { type: DataTypes.STRING, allowNull: false },
 });
 
-const Category = sequelize.define("category", {
+const Category = sequelize.define("categories", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   name: { type: DataTypes.STRING, unique: true, allowNull: false },
   description: { type: DataTypes.STRING, allowNull: false },
   images: {
     type: DataTypes.JSON,
-    allowNull: false,
+    allowNull: true,
     index: {
-      name: "categories_index",
-      using: "gin",
-      operator: "jsonb_path_ops",
-    },
-  },
-  tableCharacteristics: {
-    type: DataTypes.JSON,
-    allowNull: false,
-    index: {
-      name: "categories_index",
+      name: "images_index",
       using: "gin",
       operator: "jsonb_path_ops",
     },
@@ -43,8 +26,18 @@ const Category = sequelize.define("category", {
 
 const Characteristics = sequelize.define("characteristics", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  name: { type: DataTypes.STRING, unique: true, allowNull: false },
-  value: { type: DataTypes.STRING, allowNull: false },
+  name: { type: DataTypes.STRING, allowNull: true },
+  value: { type: DataTypes.STRING, allowNull: true },
+});
+
+const TableCharacteristics = sequelize.define("tableCharacteristics", {
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  name: { type: DataTypes.ARRAY(DataTypes.STRING), allowNull: true },
+});
+
+const TableNameCharacteristics = sequelize.define("tableNameCharacteristics", {
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  name: { type: DataTypes.ARRAY(DataTypes.STRING), allowNull: true },
 });
 
 const Reporting = sequelize.define("reporting", {
@@ -54,22 +47,21 @@ const Reporting = sequelize.define("reporting", {
 
 const ReportingLinks = sequelize.define("reportingLinks", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  name: { type: DataTypes.STRING, unique: true, allowNull: false },
+  name: { type: DataTypes.STRING, allowNull: false },
   src: { type: DataTypes.STRING, unique: true, allowNull: false },
 });
 
 const Galery = sequelize.define("galery", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  name: { type: DataTypes.STRING, unique: true, allowNull: false },
+  name: { type: DataTypes.STRING, allowNull: false },
   img: { type: DataTypes.STRING, unique: true, allowNull: false },
 });
 
 const News = sequelize.define("news", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   name: { type: DataTypes.STRING, unique: true, allowNull: false },
-  description: { type: DataTypes.STRING, allowNull: false },
+  description: { type: DataTypes.TEXT, allowNull: false },
   smallDescription: { type: DataTypes.STRING, allowNull: false },
-  date: { type: DataTypes.INTEGER, allowNull: false },
   img: { type: DataTypes.STRING, allowNull: false },
 });
 
@@ -96,13 +88,30 @@ const DirectorPhotoContacts = sequelize.define("directorPhotoContacts", {
   image: { type: DataTypes.STRING, allowNull: false },
 });
 
-Items.hasMany(Category, { as: "itemCategories" });
+const User = sequelize.define("user", {
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  name: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true,
+    required: true,
+  },
+  password: { type: DataTypes.STRING, required: true },
+});
+
+Items.hasMany(Category, { as: "categories" });
 Category.belongsTo(Items);
 
-Category.hasMany(Characteristics);
+Category.hasMany(Characteristics, { as: "characteristics" });
 Characteristics.belongsTo(Category);
 
-Reporting.hasMany(ReportingLinks);
+Category.hasMany(TableCharacteristics, { as: "tableCharacteristics" });
+TableCharacteristics.belongsTo(Category);
+
+Category.hasMany(TableNameCharacteristics, { as: "tableNameCharacteristics" });
+TableCharacteristics.belongsTo(Category);
+
+Reporting.hasMany(ReportingLinks, { as: "reportingLinks" });
 ReportingLinks.belongsTo(Reporting);
 
 module.exports = {
@@ -116,4 +125,7 @@ module.exports = {
   DirectorContacts,
   MarketingContacts,
   DirectorPhotoContacts,
+  TableCharacteristics,
+  TableNameCharacteristics,
+  User,
 };
