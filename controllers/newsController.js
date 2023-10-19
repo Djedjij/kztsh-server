@@ -15,17 +15,16 @@ class NewsController {
   }
   async create(req, res, next) {
     try {
-      const { name, description, smallDescription, date } = req.body;
+      const { name, description, smallDescription } = req.body;
       const { img } = req.files;
-      console.log(req.files);
+      const folderName = "newsImg";
       let fileName = uuid.v4() + ".jpg";
-      img.mv(path.resolve(__dirname, "..", "static", fileName));
+      img.mv(path.resolve(__dirname, "..", "static", folderName, fileName));
       const news = await News.create({
         name,
         description,
         smallDescription,
         img: fileName,
-        date,
       });
       return res.json(news);
     } catch (e) {
@@ -42,7 +41,13 @@ class NewsController {
         return res.status(404).json({ error: "Не найдено" });
       }
       const fileName = news.img;
-      const filePath = path.resolve(__dirname, "..", "static", fileName);
+      const filePath = path.resolve(
+        __dirname,
+        "..",
+        "static",
+        "newsImg",
+        fileName
+      );
       fs.unlinkSync(filePath);
       await news.destroy();
 

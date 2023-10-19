@@ -20,7 +20,9 @@ class DirectorPhotoContactsController {
       const { name, job } = req.body;
       const { image } = req.files;
       let fileName = uuid.v4() + ".jpg";
-      image.mv(path.resolve(__dirname, "..", "static", fileName));
+      image.mv(
+        path.resolve(__dirname, "..", "static", "directorPhotoImg", fileName)
+      );
       const directorPhotoContacts = await DirectorPhotoContacts.create({
         name,
         job,
@@ -42,7 +44,13 @@ class DirectorPhotoContactsController {
       }
 
       const fileName = directorPhotoContacts.image;
-      const filePath = path.resolve(__dirname, "..", "static", fileName);
+      const filePath = path.resolve(
+        __dirname,
+        "..",
+        "static",
+        "directorPhotoImg",
+        fileName
+      );
       fs.unlinkSync(filePath);
 
       await directorPhotoContacts.destroy();
