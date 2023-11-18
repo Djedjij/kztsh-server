@@ -32,8 +32,12 @@ const Characteristics = sequelize.define("characteristics", {
 
 const TableCharacteristics = sequelize.define("tableCharacteristics", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  name: { type: DataTypes.STRING, allowNull: true },
-  value: { type: DataTypes.STRING, allowNull: true },
+  name: { type: DataTypes.ARRAY(DataTypes.STRING), allowNull: true },
+});
+
+const TableNameCharacteristics = sequelize.define("tableNameCharacteristics", {
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  name: { type: DataTypes.ARRAY(DataTypes.STRING), allowNull: true },
 });
 
 const Reporting = sequelize.define("reporting", {
@@ -95,6 +99,17 @@ const User = sequelize.define("user", {
   password: { type: DataTypes.STRING, required: true },
 });
 
+const Video = sequelize.define("video", {
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  name: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true,
+    required: true,
+  },
+  url: { type: DataTypes.STRING, allowNull: false },
+});
+
 Items.hasMany(Category, { as: "categories" });
 Category.belongsTo(Items);
 
@@ -102,6 +117,9 @@ Category.hasMany(Characteristics, { as: "characteristics" });
 Characteristics.belongsTo(Category);
 
 Category.hasMany(TableCharacteristics, { as: "tableCharacteristics" });
+TableCharacteristics.belongsTo(Category);
+
+Category.hasMany(TableNameCharacteristics, { as: "tableNameCharacteristics" });
 TableCharacteristics.belongsTo(Category);
 
 Reporting.hasMany(ReportingLinks, { as: "reportingLinks" });
@@ -119,5 +137,7 @@ module.exports = {
   MarketingContacts,
   DirectorPhotoContacts,
   TableCharacteristics,
+  TableNameCharacteristics,
   User,
+  Video,
 };

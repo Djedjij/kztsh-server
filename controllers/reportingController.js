@@ -20,7 +20,6 @@ class ReportingController {
     });
     return res.json(reporting);
   }
-
   async create(req, res, next) {
     try {
       let { name, reportingLinks } = req.body;

@@ -3,6 +3,7 @@ const {
   Category,
   Characteristics,
   TableCharacteristics,
+  TableNameCharacteristics,
 } = require("../models/models");
 const uuid = require("uuid");
 const path = require("path");
@@ -14,6 +15,7 @@ class CategoryController {
       include: [
         { model: Characteristics, as: "characteristics" },
         { model: TableCharacteristics, as: "tableCharacteristics" },
+        { model: TableNameCharacteristics, as: "tableNameCharacteristics" },
       ],
     });
     return res.json(categories);
@@ -26,6 +28,7 @@ class CategoryController {
       include: [
         { model: Characteristics, as: "characteristics" },
         { model: TableCharacteristics, as: "tableCharacteristics" },
+        { model: TableNameCharacteristics, as: "tableNameCharacteristics" },
       ],
     });
     return res.json(categories);
@@ -33,10 +36,14 @@ class CategoryController {
 
   async create(req, res, next) {
     try {
-      const { name, description, characteristics, tableCharacteristics } =
-        req.body;
+      const {
+        name,
+        description,
+        characteristics,
+        tableCharacteristics,
+        tableNameCharacteristics,
+      } = req.body;
       const itemId = req.params.itemId;
-      console.log(itemId);
       let { images } = req.files;
 
       if (!images) {
@@ -66,6 +73,7 @@ class CategoryController {
         images: imagesArr,
         characteristics,
         tableCharacteristics,
+        tableNameCharacteristics,
         itemId,
       });
 
@@ -78,23 +86,6 @@ class CategoryController {
               await Characteristics.create({
                 name: i.name,
                 value: i.value,
-                categoryId: categories.id,
-              });
-            } catch (e) {
-              next(ApiError.badRequest(e.message));
-            }
-          })
-        );
-      }
-
-      if (tableCharacteristics) {
-        const tableCharacteristicsArr = JSON.parse(tableCharacteristics);
-        await Promise.all(
-          tableCharacteristicsArr.map(async (char) => {
-            try {
-              await TableCharacteristics.create({
-                name: char.name,
-                value: char.value,
                 categoryId: categories.id,
               });
             } catch (e) {
@@ -171,33 +162,70 @@ class CategoryController {
   async createTableCharacteristics(req, res, next) {
     const characteristicsId = req.params.categoryId;
 
-    const newTableCharacteristics = req.body;
-
-    try {
-      const categories = await Category.findByPk(characteristicsId);
-      if (!categories) {
-        return res.status(404).json({ error: "Не найдено" });
-      }
-
-      if (newTableCharacteristics) {
-        let { name, value } = req.body;
-
+    const categories = await Category.findByPk(characteristicsId);
+    if (!categories) {
+      return res.status(404).json({ error: "Не найдено" });
+    }
+    if (req.body && Array.isArray(req.body)) {
+      const names = req.body;
+      console.log(names);
+      try {
         await TableCharacteristics.create({
-          name,
-          value,
+          name: names,
           categoryId: categories.id,
         });
+        return res.json(categories);
+      } catch (e) {
+        return next(ApiError.badRequest(e.message));
       }
-      return res.json(categories);
-    } catch (e) {
-      next(ApiError.badRequest(e.message));
     }
+    return res.status(400).json({ error: "Неправильный формат данных" });
   }
 
   async deleteTableCharacteristics(req, res, next) {
     try {
       const tableCharacteristicsId = req.params.tableCharacteristicsId;
       const tableCharacteristics = await TableCharacteristics.findByPk(
+        tableCharacteristicsId
+      );
+
+      if (!tableCharacteristics) {
+        return res.status(404).json({ error: "Не найдено" });
+      }
+
+      await tableCharacteristics.destroy();
+
+      return res.status(204).send();
+    } catch (e) {
+      next(ApiError.badRequest(e.message));
+    }
+  }
+
+  async createTableNameCharacteristics(req, res, next) {
+    const characteristicsId = req.params.categoryId;
+    const categories = await Category.findByPk(characteristicsId);
+    if (!categories) {
+      return res.status(404).json({ error: "Не найдено" });
+    }
+    if (req.body && Array.isArray(req.body)) {
+      const names = req.body;
+      try {
+        await TableNameCharacteristics.create({
+          name: names,
+          categoryId: categories.id,
+        });
+        return res.json(categories);
+      } catch (e) {
+        return next(ApiError.badRequest(e.message));
+      }
+    }
+    return res.status(400).json({ error: "Не правильный формат данных" });
+  }
+
+  async deleteTableNameCharacteristics(req, res, next) {
+    try {
+      const tableCharacteristicsId = req.params.tableCharacteristicsId;
+      const tableCharacteristics = await TableNameCharacteristics.findByPk(
         tableCharacteristicsId
       );
 

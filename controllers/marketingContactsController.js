@@ -5,6 +5,7 @@ class MarketingContactsController {
     const marketingContacts = await MarketingContacts.findAll();
     return res.json(marketingContacts);
   }
+
   async getOne(req, res) {
     const { id } = req.params;
     const marketingContacts = await MarketingContacts.findOne({

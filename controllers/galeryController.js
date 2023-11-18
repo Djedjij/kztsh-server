@@ -18,8 +18,9 @@ class GaleryController {
     try {
       const { name } = req.body;
       const { img } = req.files;
+      const folderName = "galeryImg";
       let fileName = uuid.v4() + ".jpg";
-      img.mv(path.resolve(__dirname, "..", "static", fileName));
+      img.mv(path.resolve(__dirname, "..", "static", folderName, fileName));
       const galery = await Galery.create({
         name,
         img: fileName,
@@ -39,7 +40,13 @@ class GaleryController {
         return res.status(404).json({ error: "Не найдено" });
       }
       const fileName = galery.img;
-      const filePath = path.resolve(__dirname, "..", "static", fileName);
+      const filePath = path.resolve(
+        __dirname,
+        "..",
+        "static",
+        "galeryImg",
+        fileName
+      );
       fs.unlinkSync(filePath);
 
       await galery.destroy();

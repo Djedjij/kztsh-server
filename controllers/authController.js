@@ -35,7 +35,7 @@ class authController {
       const user = await User.findOne({ where: { name } });
 
       if (!user) {
-        throw new Error("Пользователь не найден");
+        throw new Error("Неверное имя пользователя или пароль");
       }
       const isValidPassword = bcrypt.compareSync(password, user.password);
       if (!isValidPassword) {

@@ -21,4 +21,13 @@ router.delete(
   "/deleteTableCharacteristics/:tableCharacteristicsId",
   CategoryController.deleteTableCharacteristics
 );
+
+router.post(
+  "/addTableNameCharacteristics/:categoryId",
+  CategoryController.createTableNameCharacteristics
+);
+router.delete(
+  "/deleteTableNameCharacteristics/:tableCharacteristicsId",
+  CategoryController.deleteTableNameCharacteristics
+);
 module.exports = router;
