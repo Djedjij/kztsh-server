@@ -16,7 +16,7 @@ class MarketingContactsController {
   async create(req, res, next) {
     try {
       const { name, job, internalPhone, phone } = req.body;
-
+      console.log(req.body);
       const marketingContacts = await MarketingContacts.create({
         name,
         job,
