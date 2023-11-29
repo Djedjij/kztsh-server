@@ -48,4 +48,5 @@ class MarketingContactsController {
   }
 }
 
+//
 module.exports = new MarketingContactsController();
