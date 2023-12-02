@@ -11,9 +11,13 @@ class VideoController {
   }
 
   async getOne(req, res) {
-    const { id } = req.params;
-    const video = await Video.findOne({ where: { id } });
-    return res.json(video);
+    try {
+      const { id } = req.params;
+      const video = await Video.findOne({ where: { id } });
+      return res.json(video);
+    } catch (e) {
+      next(ApiError.badRequest(e.message));
+    }
   }
   async create(req, res, next) {
     try {
